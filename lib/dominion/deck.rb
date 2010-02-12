@@ -1,0 +1,3 @@
+class Dominion::Deck
+  
+end

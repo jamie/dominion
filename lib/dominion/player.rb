@@ -1,0 +1,2 @@
+class Dominion::Player
+end

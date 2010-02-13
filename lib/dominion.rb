@@ -5,6 +5,8 @@ require 'dominion/deck'
 require 'dominion/player'
 require 'dominion/game'
 
-Dir['lib/dominion/card/*.rb'].each do |file|
-  require file.chomp('.rb')
-end
+require 'dominion/card/base'
+require 'dominion/card/dominion'
+#require 'dominion/card/intrigue'
+#require 'dominion/card/seaside'
+#require 'dominion/card/promo'

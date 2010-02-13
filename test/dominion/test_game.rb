@@ -3,7 +3,8 @@ require 'test_helper'
 class TestDominionGame < Test::Unit::TestCase
   context "Two-player setup" do
     setup do
-      @g = Game.new([1,2])
+      @player = Player.new("Anonymous")
+      @g = Game.new([@player, @player])
     end
     
     should "include eight of each Victory card" do
@@ -21,7 +22,8 @@ class TestDominionGame < Test::Unit::TestCase
   
   context "Three-player setup" do
     setup do
-      @g = Game.new([1,2,3])
+      @player = Player.new("Anonymous")
+      @g = Game.new([@player, @player, @player])
     end
     
     should "include twelve of each Victory card" do
@@ -39,7 +41,8 @@ class TestDominionGame < Test::Unit::TestCase
   
   context "Four-player setup" do
     setup do
-      @g = Game.new([1,2,3,4])
+      @player = Player.new("Anonymous")
+      @g = Game.new([@player, @player, @player, @player])
     end
     
     should "include twelve Estates" do

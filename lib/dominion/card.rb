@@ -1,20 +1,59 @@
 class Dominion::Card
-  def self.all
-    []
+  def self.named(name)
+    @cards[name]
+  end
+
+  def self.kingdom
+    @cards.values.reject{|e|e.base?}.map{|e|e.name}
+  end
+
+  def self.define(name, &block)
+    @cards ||= {}
+    if block_given?
+      @cards[name] = self.new(name)
+      @cards[name].instance_eval &block
+    end
+    @cards[name]
+  end
+
+  def self.define_base(name, cost, *types, &block)
+    card = define(name, &block)
+    card.base true
+    card.cost cost
+    card.type types
+  end
+
+  def self.define_kingdom(name, cost, *types, &block)
+    card = define(name, &block)
+    card.cost cost
+    card.type types
+  end
+
+  def initialize(name)
+    self.name name
+  end
+
+  def kingdom(cost, set, *types)
+    self.set set
+    self.cost cost
+    self.type types
   end
   
   # Deprecated, but not gone
-  def self.type(*args)
+  def type(*args)
     method_missing(:type, *args)
   end
   
-  def self.method_missing(method, *args, &block)
+  def method_missing(method, *args, &block)
     @meta ||= {}
     
     case method.to_s
     when /_for$/
       m = method.to_s.chomp('_for').to_sym
       @meta[m].call(*args)
+    when /\?$/
+      m = method.to_s.chomp('?').to_sym
+      @meta[m]
     else
       if block_given?
         @meta[method] = block.to_proc
@@ -28,13 +67,8 @@ class Dominion::Card
   
   %w(Victory Treasure Curse Action Attack Reaction Duration).each do |type|
     eval <<-EVAL
-      def self.#{type.downcase}?
-        case @meta[:type]
-        when String
-          @meta[:type] == "#{type}"
-        when Array
-          @meta[:type].include? "#{type}"
-        end
+      def #{type.downcase}?
+        @meta[:set] == "#{type}" or @meta[:type].include? "#{type}"
       end
     EVAL
   end

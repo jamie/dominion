@@ -5,6 +5,16 @@ class Dominion::Game
     init_cards(card_set(cards))
   end
   
+  def cards
+    @cards.keys.sort_by do |name|
+      Card.named(name)
+    end.map{|name| [name, @cards[name]]}
+  end
+
+  def current_player
+    @players.first
+  end
+
   def init_cards(extras)
     @cards = Hash.new(0)
     @cards["Copper"] = 60 - 7 * @players.count
@@ -26,6 +36,14 @@ class Dominion::Game
     end
   end
   
+  def next_player!
+    @players.push @players.shift
+  end
+
+  def over?
+    @cards.values.count(0) >= 3
+  end
+
   def remaining(card)
     @cards[card]
   end
@@ -34,9 +52,14 @@ private
   def card_set(cards)
     case cards
     when Array; cards
-    when :random; Card.all.sort_by{|e|rand}[0...10]
-    #when "First Game"; ["Cellar", "..."]
-    else []
+    when :random
+      Card.kingdom.sort_by{rand}[0...10]
+    when "First Game"
+      [ "Cellar", "Market", "Militia", "Mine", "Moat",
+        "Remodel", "Smithy", "Village", "Woodcutter", "Workshop"
+      ]
+    else
+      []
     end
   end
 
@@ -44,6 +67,7 @@ private
     case @players.count
     when 2;    8
     when 3,4; 12
+    else       0
     end
   end
 end

@@ -48,18 +48,18 @@ class Dominion::Game
     @cards[card]
   end
   
+  def self.register_sets(sets)
+    @sets = sets
+  end
+  
 private
   def card_set(cards)
     case cards
     when Array; cards
     when :random
       Card.kingdom.sort_by{rand}[0...10]
-    when "First Game"
-      [ "Cellar", "Market", "Militia", "Mine", "Moat",
-        "Remodel", "Smithy", "Village", "Woodcutter", "Workshop"
-      ]
     else
-      []
+      @sets[cards] || []
     end
   end
 

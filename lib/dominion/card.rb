@@ -9,11 +9,12 @@ class Dominion::Card
 
   def self.define(name, &block)
     @cards ||= {}
+    card = self.new(name)
     if block_given?
-      @cards[name] = self.new(name)
-      @cards[name].instance_eval &block
+      card.instance_eval &block
+      @cards[name] = card
     end
-    @cards[name]
+    card
   end
 
   def self.define_base(name, cost, *types, &block)

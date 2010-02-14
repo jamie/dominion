@@ -1,5 +1,5 @@
-#Dominion::Card.define_kingdom "Adventurer"
-#Dominion::Card.define_kingdom "Bureaucrat"
+Dominion::Card.define_kingdom "Adventurer", 6, "Action"
+Dominion::Card.define_kingdom "Bureaucrat", 4, "Action", "Attack"
 
 Dominion::Card.define_kingdom "Cellar", 2, "Action" do
   set "Dominion"
@@ -20,14 +20,25 @@ Dominion::Card.define_kingdom "Cellar", 2, "Action" do
   end
 end
 
-#Dominion::Card.define_kingdom "Chancellor"
-#Dominion::Card.define_kingdom "Chapel"
-#Dominion::Card.define_kingdom "Council Room"
-#Dominion::Card.define_kingdom "Feast"
-#Dominion::Card.define_kingdom "Festival"
-#Dominion::Card.define_kingdom "Gardens"
-#Dominion::Card.define_kingdom "Laboratory"
-#Dominion::Card.define_kingdom "Library"
+Dominion::Card.define_kingdom "Chancellor", 3, "Action"
+Dominion::Card.define_kingdom "Chapel", 2, "Action"
+Dominion::Card.define_kingdom "Council Room", 5, "Action"
+Dominion::Card.define_kingdom "Feast", 4, "Action"
+
+Dominion::Card.define_kingdom "Festival", 5, "Action" do
+  extra_actions 2
+  extra_buys 1
+  extra_coins 2
+end
+
+Dominion::Card.define_kingdom "Gardens", 4, "Victory"
+
+Dominion::Card.define_kingdom "Laboratory", 5, "Action" do
+  extra_actions 1
+  extra_cards 2
+end
+
+Dominion::Card.define_kingdom "Library", 5, "Action"
 
 Dominion::Card.define_kingdom "Market", 5, "Action" do
   set "Dominion"
@@ -84,7 +95,7 @@ Dominion::Card.define_kingdom "Moat", 2, "Action", "Reaction" do
   # TODO
 end
 
-#Dominion::Card.define_kingdom "Moneylender"
+Dominion::Card.define_kingdom "Moneylender", 4, "Action"
 
 Dominion::Card.define_kingdom "Remodel", 4, "Action" do
   set "Dominion"
@@ -107,9 +118,9 @@ Dominion::Card.define_kingdom "Smithy", 4, "Action" do
   extra_cards 3
 end
 
-#Dominion::Card.define_kingdom "Spy"
-#Dominion::Card.define_kingdom "Thief"
-#Dominion::Card.define_kingdom "Throne Room"
+Dominion::Card.define_kingdom "Spy", 4, "Action", "Attack"
+Dominion::Card.define_kingdom "Thief", 4, "Action", "Attack"
+Dominion::Card.define_kingdom "Throne Room", 4, "Action"
 
 Dominion::Card.define_kingdom "Village", 3, "Action" do
   set "Dominion"
@@ -123,7 +134,7 @@ Dominion::Card.define_kingdom "Village", 3, "Action" do
   extra_cards 1
 end
 
-#Dominion::Card.define_kingdom "Witch"
+Dominion::Card.define_kingdom "Witch", 5, "Action", "Attack"
 
 Dominion::Card.define_kingdom "Woodcutter", 3, "Action" do
   set "Dominion"

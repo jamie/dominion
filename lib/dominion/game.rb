@@ -9,6 +9,10 @@ class Dominion::Game
     init_cards(card_set(cards))
   end
   
+  def ask(player, question, opts={})
+    # TODO
+  end
+
   def cards
     @cards.keys.sort_by do |name|
       Card.named(name)

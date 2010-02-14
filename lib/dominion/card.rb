@@ -40,6 +40,10 @@ class Dominion::Card
     self.type types
   end
   
+  def run!(game)
+    effect.call(game)
+  end
+
   # Deprecated, but not gone
   def type(*args)
     method_missing(:type, *args)
@@ -49,9 +53,6 @@ class Dominion::Card
     @meta ||= {}
     
     case method.to_s
-    when /_for$/
-      m = method.to_s.chomp('_for').to_sym
-      @meta[m].call(*args)
     when /\?$/
       m = method.to_s.chomp('?').to_sym
       @meta[m]

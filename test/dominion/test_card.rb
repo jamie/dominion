@@ -52,10 +52,17 @@ class TestCard < Test::Unit::TestCase
   end
   
   context "Cellar" do
-    should "allow 1 extra card per card discarded" do
-      player = Player.new
-      player.expects(:ask).returns(%w(Copper))
-      assert_equal 1, Card.named('Cellar').extra_cards_for(player)
+    should "allow 1 extra draw per card discarded" do
+      p1 = Player.new
+      p2 = Player.new
+
+      game = Game.new([p1, p2], [])
+      game.expects(:ask).returns(%w(Copper))
+
+      cellar = Card.named('Cellar').dup
+      cellar.run!(game)
+
+      assert_equal 1, cellar.extra_cards
     end
   end
 end

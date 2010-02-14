@@ -1,4 +1,8 @@
 class Dominion::Game
+  class << self
+    attr_accessor :sets
+  end
+  
   def initialize(players, cards = :random)
     @players = players
     
@@ -48,10 +52,6 @@ class Dominion::Game
     @cards[card]
   end
   
-  def self.register_sets(sets)
-    @sets = sets
-  end
-  
 private
   def card_set(cards)
     case cards
@@ -59,7 +59,7 @@ private
     when :random
       Card.kingdom.sort_by{rand}[0...10]
     else
-      @sets[cards] || []
+      Game.sets[cards] || []
     end
   end
 

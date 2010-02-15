@@ -1,4 +1,6 @@
 class Dominion::Card
+  include Comparable
+
   def self.named(name)
     @cards[name]
   end
@@ -32,6 +34,19 @@ class Dominion::Card
 
   def initialize(name)
     self.name name
+  end
+
+  def <=>(other)
+    order = [:action?, :treasure?, :victory?, :curse?]
+    order.each do |m|
+      case [self.send(m), other.send(m)]
+      when [true, false]; return -1
+      when [false, true]; return 1
+      end
+    end
+    r = self.cost <=> other.cost
+    return r unless r.zero?
+    self.name <=> other.name
   end
 
   def kingdom(cost, set, *types)

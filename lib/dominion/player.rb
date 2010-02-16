@@ -17,13 +17,11 @@ class Dominion::Player
   end
 
   def available_buys
-    hand.map{|c|Card[c].buys}.compact.inject(0){|a,b|a+b} + 1 - @cards_bought
-    # TODO: Actions giving buys
+    1 + @extra_buys - @cards_bought
   end
 
   def available_coins
-    hand.map{|c|Card[c].coins}.compact.inject(0){|a,b|a+b} - @coins_spent
-    # TODO: Actions giving coins
+    coins_in_hand + @extra_coins - @coins_spent
   end
 
   def buy!(name)
@@ -40,8 +38,15 @@ class Dominion::Player
 
   def cleanup!
     @hand = %w(Copper Copper Copper Estate Estate)
+    @extra_actions = 0
+    @extra_coins = 0
     @coins_spent = 0
+    @extra_buys = 0
     @cards_bought = 0
+  end
+  
+  def coins_in_hand
+    hand.map{|c|Card[c].coins}.compact.inject(0){|a,b|a+b}
   end
 
   def discard!(card)

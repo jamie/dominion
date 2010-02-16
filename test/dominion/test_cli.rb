@@ -16,7 +16,7 @@ class TestDominionCLI < Test::Unit::TestCase
     should "display cards available for game" do
       @p1.io.reader.close
       @cli.run
-      assert_match /\d+. Province \(8 remain\)/, @p1.io.writer.string
+      assert_match /16. \[8\] Province +\( 8 remain\)/, @p1.io.writer.string
     end
     
     should "display hand only to current player" do

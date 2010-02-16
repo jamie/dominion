@@ -65,7 +65,9 @@ private
     case cards
     when Array; cards
     when :random
-      Card.kingdom[0...10]
+      Card.kingdom.sort_by{rand}[0...10]
+    when 'Dominion', 'Intrigue', 'Seaside'
+      Card.kingdom.select{|c|Card[c].set == cards}.sort_by{rand}[0...10]
     else
       Game.sets[cards] || []
     end

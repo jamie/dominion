@@ -10,16 +10,15 @@ class Dominion::Player
   end
 
   def ask(question)
-    @io.print question
+    @io.print question, ' '
     output = @io.gets.chomp
     @io.puts
     output
   end
 
   def available_buys
-    hand.map{|c|Card[c].buys}.compact.inject(0){|a,b|a+b} + 1
+    hand.map{|c|Card[c].buys}.compact.inject(0){|a,b|a+b} + 1 - @cards_bought
     # TODO: Actions giving buys
-    # TODO: -used buys
   end
 
   def available_coins
@@ -31,6 +30,7 @@ class Dominion::Player
     card = Card[name]
     if spend! card.cost
       @discards << name
+      @cards_bought += 1
       true
     else
       @error = "Insufficient coins to buy card"
@@ -41,6 +41,7 @@ class Dominion::Player
   def cleanup!
     @hand = %w(Copper Copper Copper Estate Estate)
     @coins_spent = 0
+    @cards_bought = 0
   end
 
   def discard!(card)

@@ -10,7 +10,7 @@ class Dominion::CLI
     buff.puts "Cards Available:"
     @game.cards.each_with_index do |e,i|
       card, count = e
-      buff.puts "  #{i+1}. #{card} (#{count} remain)"
+      buff.puts "  %2s. [%i] %-16s (%2s remain)" % [i+1, Card[card].cost, card, count]
     end
     buff.string
   end

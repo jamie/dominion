@@ -53,7 +53,6 @@ class Dominion::Player
 
   def tell(statement)
     @io.puts statement
-    @io.puts
   end
 
   def spend!(amount)

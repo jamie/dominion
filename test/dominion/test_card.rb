@@ -60,7 +60,7 @@ class TestCard < Test::Unit::TestCase
       game.start
 
       p1.expects(:ask).returns(%w(Copper))
-      Card['Cellar'].run!(game)
+      Card['Cellar'].call(game)
 
       assert_equal 1, p1.discards.size
       assert_equal 5, p1.hand.size

@@ -49,16 +49,16 @@ class Dominion::Card
     self.name <=> other.name
   end
 
+  def call(game)
+    action.call(game) if action
+  end
+
   def kingdom(cost, set, *types)
     self.set set
     self.cost cost
     self.type types
   end
   
-  def run!(game)
-    effect.call(game)
-  end
-
   # Deprecated, but not gone
   def type(*args)
     method_missing(:type, *args)

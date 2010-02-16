@@ -60,6 +60,10 @@ class Dominion::Game
     @cards[card]
   end
   
+  def start
+    all_players.draw_hand
+  end
+  
 private
   def card_set(cards)
     case cards

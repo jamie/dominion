@@ -27,6 +27,8 @@ class Dominion::CLI
   end
 
   def run
+    @game.start
+    
     @game.all_players.tell "New Game\n--------"
     
     while !@game.over?

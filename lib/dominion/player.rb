@@ -1,18 +1,25 @@
 class Dominion::Player
-  attr_reader :name, :hand, :io, :error
+  extend Forwardable
+  attr_reader :name, :io, :error
+  
+  def_delegators :@deck,
+    :discard, :discards,
+    :draw, :draw_hand,
+    :hand
 
   def initialize(name="Anonymous", io=StandardIO)
     @io = io.new
     @name = name
     @error = ""
-    @discards = []
+    @deck = Deck.new
     cleanup!
   end
 
-  def ask(question)
+  def ask(question, responses=[], options={})
     @io.print question, ' '
     output = @io.gets.chomp
     @io.puts
+    # TODO: look up response in list, return that instead, if responses.kind_of? Array
     output
   end
 
@@ -27,7 +34,7 @@ class Dominion::Player
   def buy!(name)
     card = Card[name]
     if spend! card.cost
-      @discards << name
+      @deck.buy(name)
       @cards_bought += 1
       true
     else
@@ -37,7 +44,6 @@ class Dominion::Player
   end
 
   def cleanup!
-    @hand = %w(Copper Copper Copper Estate Estate)
     @extra_actions = 0
     @extra_coins = 0
     @coins_spent = 0
@@ -50,9 +56,7 @@ class Dominion::Player
   end
 
   def discard!(card)
-    return false unless @hand.include? card
-    card = @hand.delete_at(@hand.index(card))
-    @discards << card
+    return false unless @deck.discard(card)
     card
   end
 

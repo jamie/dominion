@@ -1,5 +1,7 @@
 module Dominion; end
 
+require 'forwardable'
+
 require 'dominion/io'
 require 'dominion/card'
 require 'dominion/deck'

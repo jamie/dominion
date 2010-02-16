@@ -57,12 +57,13 @@ class TestCard < Test::Unit::TestCase
       p2 = Player.new
 
       game = Game.new([p1, p2], [])
-      game.expects(:ask).returns(%w(Copper))
+      game.start
 
-      cellar = Card['Cellar'].dup
-      cellar.run!(game)
+      p1.expects(:ask).returns(%w(Copper))
+      Card['Cellar'].run!(game)
 
-      assert_equal 1, cellar.extra_cards
+      assert_equal 1, p1.discards.size
+      assert_equal 5, p1.hand.size
     end
   end
 end

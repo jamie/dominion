@@ -12,12 +12,13 @@ Dominion::Card.define_kingdom "Cellar", 2, "Action" do
   extra_actions 1
 
   effect do |game|
-    discards = game.ask(game.current_player, "Select any number of cards to discard.", [game.current_player.hand], :limit => 0..999)
+    player = game.current_player
+    discards = player.ask("Select any number of cards to discard.", [game.current_player.hand], :limit => 0..999)
     count = 0
     discards.each do |card|
-      count += 1 if game.current_player.discard!(card)
+      count += 1 if player.discard(card)
     end
-    extra_cards count
+    player.draw(count)
   end
 end
 

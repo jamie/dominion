@@ -6,7 +6,7 @@ task :progress do
   lacking = {}
   Dominion::Game.sets.each do |set, cards|
     cards.each do |card|
-      unless Dominion::Card.named(card)
+      unless Dominion::Card[card]
         missing[card] ||= []
         missing[card] << set
         lacking[set] ||= []

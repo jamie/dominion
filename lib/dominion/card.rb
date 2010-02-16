@@ -1,7 +1,7 @@
 class Dominion::Card
   include Comparable
 
-  def self.named(name)
+  def self.[](name)
     @cards[name]
   end
 

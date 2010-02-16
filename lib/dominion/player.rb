@@ -17,18 +17,18 @@ class Dominion::Player
   end
 
   def available_buys
-    hand.map{|c|Card.named(c).buys}.compact.inject(0){|a,b|a+b} + 1
+    hand.map{|c|Card[c].buys}.compact.inject(0){|a,b|a+b} + 1
     # TODO: Actions giving buys
     # TODO: -used buys
   end
 
   def available_coins
-    hand.map{|c|Card.named(c).coins}.compact.inject(0){|a,b|a+b} - @coins_spent
+    hand.map{|c|Card[c].coins}.compact.inject(0){|a,b|a+b} - @coins_spent
     # TODO: Actions giving coins
   end
 
   def buy!(name)
-    card = Card.named(name)
+    card = Card[name]
     if spend! card.cost
       @discards << name
       true

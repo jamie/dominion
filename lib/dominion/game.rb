@@ -11,7 +11,7 @@ class Dominion::Game
   
   def cards
     @cards.keys.sort_by do |name|
-      Card.named(name)
+      Card[name]
     end.map{|name| [name, @cards[name]]}
   end
 
@@ -40,7 +40,7 @@ class Dominion::Game
     @cards["Curse"] = 10 * (@players.count - 1)
     
     extras.each do |name|
-      if Card.named(name).victory?
+      if Card[name].victory?
         @cards[name] = number_of_victory_cards
       else
         @cards[name] = 10

@@ -6,7 +6,7 @@ class Dominion::Card
   end
 
   def self.kingdom
-    @cards.values.reject{|e|e.base?}.map{|e|e.name}
+    @cards.values.reject{|e|e.base?}.sort.map{|e|e.name}
   end
 
   def self.define(name, &block)

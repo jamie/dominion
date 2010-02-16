@@ -1,7 +1,9 @@
 module Dominion; end
 
+require 'dominion/io'
 require 'dominion/card'
 require 'dominion/deck'
+require 'dominion/player_proxy'
 require 'dominion/player'
 require 'dominion/game'
 

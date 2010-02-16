@@ -9,10 +9,6 @@ class Dominion::Game
     init_cards(card_set(cards))
   end
   
-  def ask(player, question, opts={})
-    # TODO
-  end
-
   def cards
     @cards.keys.sort_by do |name|
       Card.named(name)
@@ -21,6 +17,14 @@ class Dominion::Game
 
   def current_player
     @players.first
+  end
+
+  def other_players
+    PlayerProxy.new(@players - [current_player])
+  end
+
+  def all_players
+    PlayerProxy.new(@players)
   end
 
   def init_cards(extras)
@@ -61,7 +65,7 @@ private
     case cards
     when Array; cards
     when :random
-      Card.kingdom.sort_by{rand}[0...10]
+      Card.kingdom[0...10]
     else
       Game.sets[cards] || []
     end

@@ -68,7 +68,9 @@ Dominion::Card.define_kingdom "Militia", 4, "Action", "Attack" do
   
   extra_coins 2
   
-  # TODO
+  action do |game|    
+    # TODO: other players choose and discard cards
+  end
 end
 
 Dominion::Card.define_kingdom "Mine", 5, "Action" do
@@ -79,7 +81,9 @@ Dominion::Card.define_kingdom "Mine", 5, "Action" do
     Gain a Treasure card costing up to ¢3 more; put it into your hand.
   )
   
-  # TODO
+  action do |game|
+    # TODO
+  end
 end
 
 Dominion::Card.define_kingdom "Moat", 2, "Action", "Reaction" do
@@ -94,7 +98,9 @@ Dominion::Card.define_kingdom "Moat", 2, "Action", "Reaction" do
   
   extra_cards 2
   
-  # TODO
+  reaction do |game, attack|
+    # TODO
+  end
 end
 
 Dominion::Card.define_kingdom "Moneylender", 4, "Action"
@@ -107,7 +113,9 @@ Dominion::Card.define_kingdom "Remodel", 4, "Action" do
     Gain a card costing up to ¢2 more than the trashed card.
   )
   
-  # TODO
+  action do |game|
+    # TODO
+  end
 end
 
 Dominion::Card.define_kingdom "Smithy", 4, "Action" do
@@ -157,5 +165,7 @@ Dominion::Card.define_kingdom "Workshop", 3, "Action" do
     Gain a card costing up to 4
   )
   
-  # TODO
+  action do |game|
+    # TODO
+  end
 end

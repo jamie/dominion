@@ -1,6 +1,7 @@
 class Dominion::Player
   extend Forwardable
   attr_reader :name, :io, :error
+  attr_accessor :extra_actions, :extra_buys, :extra_coins
   
   def_delegators :@deck,
     :discard, :discards,
@@ -10,7 +11,6 @@ class Dominion::Player
   def initialize(name="Anonymous", io=StandardIO)
     @io = io.new
     @name = name
-    @error = ""
     @deck = Deck.new
     cleanup!
   end
@@ -46,9 +46,13 @@ class Dominion::Player
   def cleanup!
     @extra_actions = 0
     @extra_coins = 0
-    @coins_spent = 0
     @extra_buys = 0
+    
+    @coins_spent = 0
     @cards_bought = 0
+    
+    @error = ""
+    draw_hand
   end
   
   def coins_in_hand

@@ -51,6 +51,12 @@ class Dominion::Card
 
   def call(game)
     action.call(game) if action
+
+    me = game.current_player
+    me.extra_actions += (extra_actions || 0)
+    me.extra_buys += (extra_buys || 0)
+    me.extra_coins += (extra_coins || 0)
+    me.draw(extra_cards || 0)
   end
 
   def kingdom(cost, set, *types)

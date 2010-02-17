@@ -8,4 +8,8 @@ class Dominion::PlayerProxy
       player.send(method, *args)
     end
   end
+  
+  def each
+    @players.each {|player| yield player}
+  end
 end

@@ -51,19 +51,41 @@ class TestCard < Test::Unit::TestCase
     end
   end
   
-  context "Cellar" do
-    should "allow 1 extra draw per card discarded" do
-      p1 = Player.new
-      p2 = Player.new
+  context "action card effects" do
+    setup do
+      @p1 = Player.new
+      @p2 = Player.new
 
-      game = Game.new([p1, p2], [])
-      game.start
+      @game = Game.new([@p1, @p2], [])
+      @game.start
+    end
+  
+    context "Cellar" do
+      should "allow 1 extra draw per card discarded" do
+        @p1.expects(:ask).returns("Copper")
+        Card['Cellar'].call(@game)
 
-      p1.expects(:ask).returns(%w(Copper))
-      Card['Cellar'].call(game)
-
-      assert_equal 1, p1.discards.size
-      assert_equal 5, p1.hand.size
+        assert_equal 1, @p1.discards.size
+        assert_equal 5, @p1.hand.size
+      end
+    end
+  
+    context "Militia" do
+      should "grant two extra coins" do
+        coins = @p1.available_coins
+        
+        @p2.expects(:ask).times(2).returns("Copper", "Copper")
+        Card['Militia'].call(@game)
+        
+        assert_equal coins+2, @p1.available_coins
+      end
+      
+      should "prompt p2 to discard 2 cards" do
+        @p2.expects(:ask).times(2).returns("Copper", "Copper")
+        Card['Militia'].call(@game)
+        
+        assert_equal 3, @p2.hand.size
+      end
     end
   end
 end

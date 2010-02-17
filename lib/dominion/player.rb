@@ -17,10 +17,14 @@ class Dominion::Player
 
   def ask(question, responses=[], options={})
     @io.print question, ' '
-    output = @io.gets.chomp
+    input = @io.gets.chomp
     @io.puts
     # TODO: look up response in list, return that instead, if responses.kind_of? Array
-    output
+    input
+  end
+  
+  def available_actions
+    1 + @extra_actions - @actions_played
   end
 
   def available_buys
@@ -48,6 +52,7 @@ class Dominion::Player
     @extra_coins = 0
     @extra_buys = 0
     
+    @actions_played = 0
     @coins_spent = 0
     @cards_bought = 0
     

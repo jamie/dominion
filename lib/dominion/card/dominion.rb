@@ -68,8 +68,13 @@ Dominion::Card.define_kingdom "Militia", 4, "Action", "Attack" do
   
   extra_coins 2
   
-  action do |game|    
-    # TODO: other players choose and discard cards
+  action do |game|
+    game.other_players.each do |player|
+      while player.hand.size > 3
+        card = player.ask("Discard a card (#{player.hand.size-3} remaining)", player.hand)
+        player.discard(card)
+      end
+    end
   end
 end
 

@@ -11,13 +11,14 @@ Dominion::Card.define_kingdom "Cellar", 2, "Action" do
   extra_actions 1
 
   action do |game|
-    player = game.current_player
-    discards = player.ask("Select any number of cards to discard.", [game.current_player.hand], :limit => 0..999)
-    count = 0
-    discards.each do |card|
-      count += 1 if player.discard(card)
+    game.current_player do |player|
+      discards = player.ask("Select any number of cards to discard.", [player.hand], :count => 0..INFINITY)
+      count = 0
+      discards.each do |card|
+        count += 1 if player.discard(card)
+      end
+      player.draw(count)
     end
-    player.draw(count)
   end
 end
 Dominion::Card.define_kingdom "Chancellor", 3, "Action"
@@ -62,10 +63,8 @@ Dominion::Card.define_kingdom "Militia", 4, "Action", "Attack" do
   
   action do |game|
     game.other_players.each do |player|
-      while player.hand.size > 3
-        card = player.ask("Discard a card (#{player.hand.size-3} remaining)", player.hand)
-        player.discard(card)
-      end
+      cards = player.ask("Discard down to 3 cards.", [player.hand], :count => player.hand.size-3)
+      cards.each {|card| player.discard(card)}
     end
   end
 end

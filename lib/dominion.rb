@@ -1,5 +1,7 @@
 module Dominion; end
 
+INFINITY = 1.0/0.0
+
 require 'forwardable'
 
 require 'dominion/io'

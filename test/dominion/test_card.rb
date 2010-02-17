@@ -74,14 +74,14 @@ class TestCard < Test::Unit::TestCase
       should "grant two extra coins" do
         coins = @p1.available_coins
         
-        @p2.expects(:ask).times(2).returns("Copper", "Copper")
+        @p2.expects(:ask).returns(["Copper", "Copper"])
         Card['Militia'].call(@game)
         
         assert_equal coins+2, @p1.available_coins
       end
       
       should "prompt p2 to discard 2 cards" do
-        @p2.expects(:ask).times(2).returns("Copper", "Copper")
+        @p2.expects(:ask).returns(["Copper", "Copper"])
         Card['Militia'].call(@game)
         
         assert_equal 3, @p2.hand.size

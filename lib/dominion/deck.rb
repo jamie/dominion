@@ -57,6 +57,7 @@ class Dominion::Deck
   end
   
   def trash(card)
+    # todo: add card to Game's trash pile, somewhere?
     return unless i = @hand.index(card)
     @hand.delete_at(i)
   end

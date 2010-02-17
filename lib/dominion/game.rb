@@ -9,6 +9,10 @@ class Dominion::Game
     init_cards(card_set(cards))
   end
   
+  def available_cards
+    cards.select{|card, count| count > 0}.map{|card, count| card}
+  end
+
   def cards
     @cards.keys.sort_by do |name|
       Card[name]
@@ -16,7 +20,9 @@ class Dominion::Game
   end
 
   def current_player
-    @players.first
+    player = @players.first
+    yield player if block_given?
+    player
   end
 
   def other_players

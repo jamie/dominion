@@ -87,5 +87,47 @@ class TestCard < Test::Unit::TestCase
         assert_equal 3, @p2.hand.size
       end
     end
+
+    context "Mine" do
+      should "allow exchanging a Copper for a Silver" do
+        @p1.expects(:ask).returns("Copper")
+        @p1.expects(:ask).with{|prompt, choices|
+          cards = choices.first
+          cards == ["Copper", "Silver"]
+        }.returns("Silver")
+        Card['Mine'].call(@game)
+
+        assert_equal 6, @p1.deck.count('Copper')
+        assert_equal 1, @p1.deck.count('Silver')
+      end
+    end
+
+    context "Remodel" do
+      should "allow trashing Copper for Estate" do
+        @p1.expects(:ask).with{|prompt, choices|
+          prompt == "Select a card to trash."
+        }.returns("Copper")
+        @p1.expects(:ask).with{|prompt, choices|
+          cards = choices.first
+          prompt == "Select a new card to gain." and cards.include? "Estate"
+        }.returns("Estate")
+        Card['Remodel'].call(@game)
+
+        assert_equal 6, @p1.deck.count('Copper')
+        assert_equal 4, @p1.deck.count('Estate')
+      end
+    end
+
+    context "Workshop" do
+      should "add card to discards" do
+        @p1.expects(:ask).with{|prompt, choices|
+          cards = choices.first
+          cards.include? "Silver"
+        }.returns("Silver")
+        Card['Workshop'].call(@game)
+
+        assert_equal ["Silver"], @p1.discards
+      end
+    end
   end
 end

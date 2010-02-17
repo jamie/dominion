@@ -1,12 +1,12 @@
 class Dominion::Player
   extend Forwardable
-  attr_reader :name, :io, :error
+  attr_reader :name, :io, :error, :deck
   attr_accessor :extra_actions, :extra_buys, :extra_coins
   
   def_delegators :@deck,
     :discard, :discards,
     :draw, :draw_hand,
-    :hand
+    :hand, :trash
 
   def initialize(name="Anonymous", io=StandardIO)
     @io = io.new

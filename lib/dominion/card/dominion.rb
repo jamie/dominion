@@ -1,6 +1,5 @@
 Dominion::Card.define_kingdom "Adventurer", 6, "Action"
 Dominion::Card.define_kingdom "Bureaucrat", 4, "Action", "Attack"
-
 Dominion::Card.define_kingdom "Cellar", 2, "Action" do
   set "Dominion"
   
@@ -21,27 +20,21 @@ Dominion::Card.define_kingdom "Cellar", 2, "Action" do
     player.draw(count)
   end
 end
-
 Dominion::Card.define_kingdom "Chancellor", 3, "Action"
 Dominion::Card.define_kingdom "Chapel", 2, "Action"
 Dominion::Card.define_kingdom "Council Room", 5, "Action"
 Dominion::Card.define_kingdom "Feast", 4, "Action"
-
 Dominion::Card.define_kingdom "Festival", 5, "Action" do
   extra_actions 2
   extra_buys 1
   extra_coins 2
 end
-
 Dominion::Card.define_kingdom "Gardens", 4, "Victory"
-
 Dominion::Card.define_kingdom "Laboratory", 5, "Action" do
   extra_actions 1
   extra_cards 2
 end
-
 Dominion::Card.define_kingdom "Library", 5, "Action"
-
 Dominion::Card.define_kingdom "Market", 5, "Action" do
   set "Dominion"
 
@@ -57,7 +50,6 @@ Dominion::Card.define_kingdom "Market", 5, "Action" do
   extra_buys 1
   extra_coins 1
 end
-
 Dominion::Card.define_kingdom "Militia", 4, "Action", "Attack" do
   set "Dominion"
 
@@ -77,7 +69,6 @@ Dominion::Card.define_kingdom "Militia", 4, "Action", "Attack" do
     end
   end
 end
-
 Dominion::Card.define_kingdom "Mine", 5, "Action" do
   set "Dominion"
 
@@ -87,10 +78,17 @@ Dominion::Card.define_kingdom "Mine", 5, "Action" do
   )
   
   action do |game|
-    # TODO
+    game.current_player do |player|
+      trashed = player.ask("Select a Treasure to trash.", [player.hand.select{|c|Card[c].treasure?}])
+
+      to_gain = game.available_cards.select{|c, count| Card[c].treasure? and Card[c].cost <= Card[trashed].cost + 3}
+      gained = player.ask("Select a new Treasure card to gain.", [to_gain])
+
+      player.trash(trashed)
+      player.hand << gained
+    end
   end
 end
-
 Dominion::Card.define_kingdom "Moat", 2, "Action", "Reaction" do
   set "Dominion"
 
@@ -104,12 +102,12 @@ Dominion::Card.define_kingdom "Moat", 2, "Action", "Reaction" do
   extra_cards 2
   
   reaction do |game, attack|
-    # TODO
+    game.current_player do |player|
+      # TODO
+    end
   end
 end
-
 Dominion::Card.define_kingdom "Moneylender", 4, "Action"
-
 Dominion::Card.define_kingdom "Remodel", 4, "Action" do
   set "Dominion"
 
@@ -119,10 +117,17 @@ Dominion::Card.define_kingdom "Remodel", 4, "Action" do
   )
   
   action do |game|
-    # TODO
+    game.current_player do |player|
+      trashed = player.ask("Select a card to trash.", [player.hand])
+
+      to_gain = game.available_cards.select{|c, count| Card[c].cost <= Card[trashed].cost + 2}
+      gained = player.ask("Select a new card to gain.", [to_gain])
+
+      player.trash(trashed)
+      player.discards << gained
+    end
   end
 end
-
 Dominion::Card.define_kingdom "Smithy", 4, "Action" do
   set "Dominion"
 
@@ -132,11 +137,9 @@ Dominion::Card.define_kingdom "Smithy", 4, "Action" do
   
   extra_cards 3
 end
-
 Dominion::Card.define_kingdom "Spy", 4, "Action", "Attack"
 Dominion::Card.define_kingdom "Thief", 4, "Action", "Attack"
 Dominion::Card.define_kingdom "Throne Room", 4, "Action"
-
 Dominion::Card.define_kingdom "Village", 3, "Action" do
   set "Dominion"
 
@@ -148,9 +151,7 @@ Dominion::Card.define_kingdom "Village", 3, "Action" do
   extra_actions 2
   extra_cards 1
 end
-
 Dominion::Card.define_kingdom "Witch", 5, "Action", "Attack"
-
 Dominion::Card.define_kingdom "Woodcutter", 3, "Action" do
   set "Dominion"
 
@@ -162,7 +163,6 @@ Dominion::Card.define_kingdom "Woodcutter", 3, "Action" do
   extra_buys 1
   extra_coins 2
 end
-
 Dominion::Card.define_kingdom "Workshop", 3, "Action" do
   set "Dominion"
 
@@ -171,6 +171,11 @@ Dominion::Card.define_kingdom "Workshop", 3, "Action" do
   )
   
   action do |game|
-    # TODO
+    game.current_player do |player|
+      to_gain = game.available_cards.select{|c, count| Card[c].cost <= 4}
+      gained = player.ask("Select a new card to gain.", [to_gain])
+
+      player.discards << gained
+    end
   end
 end

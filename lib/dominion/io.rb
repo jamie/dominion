@@ -4,6 +4,7 @@ class Dominion::AbstractIO
   end
 
   def gets(*args)
+    raise IOError if closed?
     out = (@reader.gets(*args) || "").chomp
     raise IOError if out == "^D"
     out
@@ -18,6 +19,13 @@ class Dominion::AbstractIO
     @writer.puts("\n")
   end
   
+  def closed?
+    @closed == true
+  end
+  
+  def close
+    @closed = true
+  end
 end
 
 class Dominion::BufferIO < Dominion::AbstractIO

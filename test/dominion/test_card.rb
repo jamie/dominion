@@ -92,8 +92,7 @@ class TestCard < Test::Unit::TestCase
       should "allow exchanging a Copper for a Silver" do
         @p1.expects(:ask).returns("Copper")
         @p1.expects(:ask).with{|prompt, choices|
-          cards = choices.first
-          cards == ["Copper", "Silver"]
+          choices == ["Copper", "Silver"]
         }.returns("Silver")
         Card['Mine'].call(@game)
 
@@ -108,8 +107,7 @@ class TestCard < Test::Unit::TestCase
           prompt == "Select a card to trash."
         }.returns("Copper")
         @p1.expects(:ask).with{|prompt, choices|
-          cards = choices.first
-          prompt == "Select a new card to gain." and cards.include? "Estate"
+          prompt == "Select a new card to gain." and choices.include? "Estate"
         }.returns("Estate")
         Card['Remodel'].call(@game)
 
@@ -121,8 +119,7 @@ class TestCard < Test::Unit::TestCase
     context "Workshop" do
       should "add card to discards" do
         @p1.expects(:ask).with{|prompt, choices|
-          cards = choices.first
-          cards.include? "Silver"
+          choices.include? "Silver"
         }.returns("Silver")
         Card['Workshop'].call(@game)
 

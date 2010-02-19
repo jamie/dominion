@@ -28,26 +28,29 @@ class TestDominionCLI < Test::Unit::TestCase
     
     context "buy cards" do
       should "inform buyer" do
-        @p1.io.reader.puts("12", "^D")
+        @p1.io.reader.puts("10", "^D")
         @p1.io.reader.rewind
+        @p2.io.close
         @cli.run
         assert_match /Buy which card/, @p1.io.writer.string
         assert_match /Purchased Silver./, @p1.io.writer.string
       end
 
       should "inform others" do
-        @p1.io.reader.puts("12", "^D")
+        @p1.io.reader.puts("10", "^D")
         @p1.io.reader.rewind
+        @p2.io.close
         @cli.run
         assert_match /Bob purchased Silver./, @p2.io.writer.string
       end
 
       should "inform buyer of problems" do
-        @p1.io.reader.puts("16", "^D")
+        @p1.io.reader.puts("16", "", "^D")
         @p1.io.reader.rewind
+        @p2.io.close
         @cli.run
         assert_match /Buy which card/, @p1.io.writer.string
-        assert_match /Could not purchase Province/, @p1.io.writer.string
+        assert_no_match /Purchased/, @p1.io.writer.string
       end
     end
   end

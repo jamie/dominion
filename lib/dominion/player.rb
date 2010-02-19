@@ -15,12 +15,39 @@ class Dominion::Player
     cleanup!
   end
 
-  def ask(question, responses=[], options={})
-    @io.print question, ' '
-    input = @io.gets.chomp
+  def ask(prompt, responses, options={})
+    range = case options[:count]
+      when Range ; options[:count]
+      when Fixnum; options[:count] .. options[:count]
+      else         1..1
+    end
+    
+    @io.puts prompt
+    responses.each_with_index do |response, i|
+      @io.puts "%2s: %s" % [i+1, response]
+    end
+    
+    selections = []
+    loop do
+      @io.print "? "
+      input = @io.gets.chomp
+      selections += input.scan(/\d+/).map{|i|i.to_i}
+      selections.reject!{|e|e < 1 || e > responses.size}
+      selections.uniq!
+      
+      break if selections.size >= range.last
+      break if input.empty? && selections.size >= range.first
+    end
     @io.puts
-    # TODO: look up response in list, return that instead, if responses.kind_of? Array
-    input
+    
+    selections = selections.map{|i|responses[i-1]}
+    if options[:count].nil?
+      selections.first
+    elsif range.last == INFINITY
+      selections
+    else
+      selections[0...range.last]
+    end
   end
   
   def available_actions

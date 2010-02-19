@@ -52,14 +52,21 @@ class Dominion::CLI
   def run_action_phase(player)
     #card = player.ask "Select an action, <return> to skip: "
   end
+  
+  def backtrace
+    begin
+      raise StandardError
+    rescue StandardError => e
+      e.backtrace[1..-1]
+    end
+  end
 
   def run_buy_phase(player)
     player.tell "You have #{@game.current_player.available_coins} coins available to buy #{@game.current_player.available_buys} cards."
     while player.available_buys > 0
-      id = player.ask("Buy which card (enter to stop buying)?")
-      break if id.empty?
+      card = player.ask("Buy which card (enter to stop buying)?", @game.available_cards.select{|card|Card[card].cost <= player.available_coins})
+      break if card.nil?
 
-      card = @game.cards[id.to_i-1][0]
       if player.buy!(card)
         player.tell "Purchased #{card}."
         @game.other_players.tell "#{player.name} purchased #{card}."

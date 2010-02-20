@@ -1,12 +1,8 @@
 Dominion::Card.define_kingdom "Adventurer", 6, "Action"
 Dominion::Card.define_kingdom "Bureaucrat", 4, "Action", "Attack"
 Dominion::Card.define_kingdom "Cellar", 2, "Action" do
+  comment "+1 Action\nDiscard any number of cards. +1 Card per card discarded."
   set "Dominion"
-  
-  comment %(
-    +1 Action
-    Discard any number of cards. +1 Card per card discarded.
-  )
   
   extra_actions 1
 
@@ -28,80 +24,67 @@ Dominion::Card.define_kingdom "Chapel", 2, "Action"
 Dominion::Card.define_kingdom "Council Room", 5, "Action"
 Dominion::Card.define_kingdom "Feast", 4, "Action"
 Dominion::Card.define_kingdom "Festival", 5, "Action" do
+  comment "+2 Actions, +1 Buy, +2 Coins"
+  set "Dominion"
+  
   extra_actions 2
   extra_buys 1
   extra_coins 2
 end
 Dominion::Card.define_kingdom "Gardens", 4, "Victory"
 Dominion::Card.define_kingdom "Laboratory", 5, "Action" do
+  comment "+2 Cards, +1 Action"
+  set "Dominion"
+  
   extra_actions 1
   extra_cards 2
 end
 Dominion::Card.define_kingdom "Library", 5, "Action"
 Dominion::Card.define_kingdom "Market", 5, "Action" do
+  comment "+1 Card, +1 Action, +1 Buy, +1 Coin"
   set "Dominion"
 
-  comment %(
-    +1 Card
-    +1 Action
-    +1 Buy
-    +1 Coin
-  )
-  
   extra_actions 1
   extra_cards 1
   extra_buys 1
   extra_coins 1
 end
 Dominion::Card.define_kingdom "Militia", 4, "Action", "Attack" do
+  comment "+2 Coins\nEach other player discards down to 3 cards in their hand."
   set "Dominion"
 
-  comment %(
-    +2 Coins
-    Each other play discards down to 3 cards in their hand.
-  )
-  
   extra_coins 2
   
   action do |game|
     game.other_players.each do |player|
-      cards = player.ask("Discard down to 3 cards.", player.hand, :count => player.hand.size-3)
-      cards.each {|card| player.discard(card)}
+      cards = player.ask("Discard down to 3 cards.", player.hand, :count => player.hand.size-3) do |card|
+        player.discard(card)
+      end
       player.tell "Discarded #{cards.join(', ')}"
       game.other_players(player).tell "#{player.name} discarded #{cards.join(', ')}"
     end
   end
 end
 Dominion::Card.define_kingdom "Mine", 5, "Action" do
+  comment "Trash a Treasure from your hand to gain another costing up to ¢3 more.\nPut the new Treasure into your hand."
   set "Dominion"
-
-  comment %(
-    Trash a Treasure card from your hand.
-    Gain a Treasure card costing up to ¢3 more; put it into your hand.
-  )
   
   action do |game|
     game.current_player do |player|
-      trashed = player.ask("Select a Treasure to trash.", player.hand.select{|c|Card[c].treasure?})[0]
-
-      to_gain = game.available_cards.select{|c| Card[c].treasure? and Card[c].cost <= Card[trashed].cost + 3}
-      gained = player.ask("Select a new Treasure card to gain.", to_gain)[0]
-
-      player.trash(trashed)
-      player.hand << gained
+      player.ask("Select a Treasure to trash.", player.hand.select{|c|Card[c].treasure?}) do |trashed|
+        to_gain = game.available_cards.select{|c| Card[c].treasure? and Card[c].cost <= Card[trashed].cost + 3}
+        player.ask("Select a new Treasure card to gain.", to_gain) do |gained|
+          player.trash(trashed)
+          player.hand << gained
+        end
+      end
     end
   end
 end
 Dominion::Card.define_kingdom "Moat", 2, "Action", "Reaction" do
+  comment "+2 Cards\nWhen another player plays an Attack card, you may reveal this from your hand.\nIf you do, you are unaffected by that attack."
   set "Dominion"
 
-  comment %(
-    +2 Cards
-    --
-    When another player plays an Attack card, you may reveal this from your hand.
-    If you do, you are unaffected by that attack.
-  )
-  
   extra_cards 2
   
   reaction do |game, attack|
@@ -112,73 +95,55 @@ Dominion::Card.define_kingdom "Moat", 2, "Action", "Reaction" do
 end
 Dominion::Card.define_kingdom "Moneylender", 4, "Action"
 Dominion::Card.define_kingdom "Remodel", 4, "Action" do
+  comment "Trash a card from your hand, gain a card costing up to ¢2 more than it."
   set "Dominion"
-
-  comment %(
-    Trash a card from your hand.
-    Gain a card costing up to ¢2 more than the trashed card.
-  )
   
   action do |game|
     game.current_player do |player|
-      trashed = player.ask("Select a card to trash.", player.hand)[0]
-
-      to_gain = game.available_cards.select{|c| Card[c].cost <= Card[trashed].cost + 2}
-      gained = player.ask("Select a new card to gain.", to_gain)[0]
-
-      player.trash(trashed)
-      player.discards << gained
+      player.ask("Select a card to trash.", player.hand) do |trashed|
+        to_gain = game.available_cards.select{|c| Card[c].cost <= Card[trashed].cost + 2}
+        player.ask("Select a new card to gain.", to_gain) do |gained|
+          player.trash(trashed)
+          player.discards << gained
+        end
+      end
     end
   end
 end
 Dominion::Card.define_kingdom "Smithy", 4, "Action" do
+  comment "+3 Cards"
   set "Dominion"
 
-  comment %(
-    +3 Cards
-  )
-  
   extra_cards 3
 end
 Dominion::Card.define_kingdom "Spy", 4, "Action", "Attack"
 Dominion::Card.define_kingdom "Thief", 4, "Action", "Attack"
 Dominion::Card.define_kingdom "Throne Room", 4, "Action"
 Dominion::Card.define_kingdom "Village", 3, "Action" do
+  comment "+1 Card, +2 Actions"
   set "Dominion"
-
-  comment %(
-    +1 Card
-    +2 Actions
-  )
   
   extra_actions 2
   extra_cards 1
 end
 Dominion::Card.define_kingdom "Witch", 5, "Action", "Attack"
 Dominion::Card.define_kingdom "Woodcutter", 3, "Action" do
+  comment "+1 Buy, +2 Coins"
   set "Dominion"
 
-  comment %(
-    +1 Buy
-    +2 Coins
-  )
-  
   extra_buys 1
   extra_coins 2
 end
 Dominion::Card.define_kingdom "Workshop", 3, "Action" do
+  comment "Gain a card costing up to 4"
   set "Dominion"
 
-  comment %(
-    Gain a card costing up to 4
-  )
-  
   action do |game|
     game.current_player do |player|
       to_gain = game.available_cards.select{|c| Card[c].cost <= 4}
-      gained = player.ask("Select a new card to gain.", to_gain)[0]
-
-      player.discards << gained
+      player.ask("Select a new card to gain.", to_gain) do |card|
+        player.discards << card
+      end
     end
   end
 end

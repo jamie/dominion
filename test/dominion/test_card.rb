@@ -120,7 +120,7 @@ class TestCard < Test::Unit::TestCase
       should "add card to discards" do
         @p1.expects(:ask).with{|prompt, choices|
           choices.include? "Silver"
-        }.returns(["Silver"])
+        }.yields("Silver")
         Card['Workshop'].call(@game)
 
         assert_equal ["Silver"], @p1.discards

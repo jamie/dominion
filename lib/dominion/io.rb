@@ -16,7 +16,6 @@ class Dominion::AbstractIO
   
   def puts(*args)
     @writer.puts(*args)
-    @writer.puts("\n")
   end
   
   def closed?

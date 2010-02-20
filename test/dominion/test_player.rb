@@ -23,7 +23,13 @@ class TestCard < Test::Unit::TestCase
       end
     
       should "translate response to return value" do
-        assert_equal "bar", @p.ask("foo", ["bar"])
+        assert_equal ["bar"], @p.ask("foo", ["bar"])
+      end
+      
+      should "yield return values" do
+        @p.ask("foo", ["bar"]) do |response|
+          assert_equal "bar", response
+        end
       end
     
       should "reprompt on empty response" do

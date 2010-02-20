@@ -53,8 +53,8 @@ class TestCard < Test::Unit::TestCase
   
   context "action card effects" do
     setup do
-      @p1 = Player.new
-      @p2 = Player.new
+      @p1 = Player.new("p1", BufferIO)
+      @p2 = Player.new("p2", BufferIO)
 
       @game = Game.new([@p1, @p2], [])
       @game.start
@@ -62,7 +62,7 @@ class TestCard < Test::Unit::TestCase
   
     context "Cellar" do
       should "allow 1 extra draw per card discarded" do
-        @p1.expects(:ask).returns("Copper")
+        @p1.expects(:ask).returns(["Copper"])
         Card['Cellar'].call(@game)
 
         assert_equal 1, @p1.discards.size
@@ -90,10 +90,10 @@ class TestCard < Test::Unit::TestCase
 
     context "Mine" do
       should "allow exchanging a Copper for a Silver" do
-        @p1.expects(:ask).returns("Copper")
+        @p1.expects(:ask).returns(["Copper"])
         @p1.expects(:ask).with{|prompt, choices|
           choices == ["Copper", "Silver"]
-        }.returns("Silver")
+        }.returns(["Silver"])
         Card['Mine'].call(@game)
 
         assert_equal 6, @p1.deck.count('Copper')
@@ -105,10 +105,10 @@ class TestCard < Test::Unit::TestCase
       should "allow trashing Copper for Estate" do
         @p1.expects(:ask).with{|prompt, choices|
           prompt == "Select a card to trash."
-        }.returns("Copper")
+        }.returns(["Copper"])
         @p1.expects(:ask).with{|prompt, choices|
           prompt == "Select a new card to gain." and choices.include? "Estate"
-        }.returns("Estate")
+        }.returns(["Estate"])
         Card['Remodel'].call(@game)
 
         assert_equal 6, @p1.deck.count('Copper')
@@ -120,7 +120,7 @@ class TestCard < Test::Unit::TestCase
       should "add card to discards" do
         @p1.expects(:ask).with{|prompt, choices|
           choices.include? "Silver"
-        }.returns("Silver")
+        }.returns(["Silver"])
         Card['Workshop'].call(@game)
 
         assert_equal ["Silver"], @p1.discards

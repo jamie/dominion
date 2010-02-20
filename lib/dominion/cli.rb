@@ -50,28 +50,33 @@ class Dominion::CLI
   end
 
   def run_action_phase(player)
-    #card = player.ask "Select an action, <return> to skip: "
-  end
-  
-  def backtrace
-    begin
-      raise StandardError
-    rescue StandardError => e
-      e.backtrace[1..-1]
+    while player.available_actions > 0
+      return if player.actions.empty?
+
+      cards = player.ask("Play cards (#{player.available_actions} actions available).", player.actions, :count => 0..1)
+      break if cards.empty?
+
+      cards.each do |card|
+        @game.other_players.tell "#{player.name} played #{card}"
+        player.play(card, @game)
+      end
     end
   end
 
   def run_buy_phase(player)
     player.tell "You have #{@game.current_player.available_coins} coins available to buy #{@game.current_player.available_buys} cards."
     while player.available_buys > 0
-      card = player.ask("Buy which card (enter to stop buying)?", @game.available_cards.select{|card|Card[card].cost <= player.available_coins})
-      break if card.nil?
+      cards = player.ask("Buy cards (#{player.available_buys} buys available).", @game.available_cards.select{|card|Card[card].cost <= player.available_coins}, :count => 0..1)
+      break if cards.empty?
 
-      if player.buy!(card)
-        player.tell "Purchased #{card}."
-        @game.other_players.tell "#{player.name} purchased #{card}."
-      else
-        player.tell "Could not purchase #{card}, #{player.error}."
+      cards.each do |card|
+        if player.buy!(card)
+          @game.track_purchase(card)
+          player.tell "Purchased #{card}."
+          @game.other_players.tell "#{player.name} purchased #{card}."
+        else
+          player.tell "Could not purchase #{card}, #{player.error}."
+        end
       end
     end
   end

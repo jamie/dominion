@@ -33,14 +33,18 @@ class Dominion::Deck
   end
   
   def draw(n=1)
+    new_cards = []
     n.times do
       if @stack.empty?
         @stack, @discards = @discards, []
         shuffle
       end
-      @hand << @stack.shift
+      card = @stack.shift
+      @hand << card
+      new_cards << card
     end
     @hand.sort_by{|e|Card[e]}
+    new_cards.sort_by{|e|Card[e]}
   end
   
   def draw_hand
@@ -57,7 +61,7 @@ class Dominion::Deck
   end
   
   def trash(card)
-    # todo: add card to Game's trash pile, somewhere?
+    # TODO: make game inspect all players' trashes to enumerate its trash?
     return unless i = @hand.index(card)
     @hand.delete_at(i)
   end

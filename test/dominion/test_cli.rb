@@ -32,7 +32,7 @@ class TestDominionCLI < Test::Unit::TestCase
         @p1.io.reader.rewind
         @p2.io.close
         @cli.run
-        assert_match /Buy which card/, @p1.io.writer.string
+        assert_match /Buy cards/, @p1.io.writer.string
         assert_match /Purchased Silver./, @p1.io.writer.string
       end
 
@@ -49,7 +49,7 @@ class TestDominionCLI < Test::Unit::TestCase
         @p1.io.reader.rewind
         @p2.io.close
         @cli.run
-        assert_match /Buy which card/, @p1.io.writer.string
+        assert_match /Buy cards/, @p1.io.writer.string
         assert_no_match /Purchased/, @p1.io.writer.string
       end
     end

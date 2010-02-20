@@ -15,6 +15,10 @@ class Dominion::Player
     cleanup!
   end
 
+  def actions
+    hand.select{|c|Card[c].action?}
+  end
+
   def ask(prompt, responses, options={})
     range = case options[:count]
       when Range ; options[:count]
@@ -41,13 +45,8 @@ class Dominion::Player
     @io.puts
     
     selections = selections.map{|i|responses[i-1]}
-    if options[:count].nil?
-      selections.first
-    elsif range.last == INFINITY
-      selections
-    else
-      selections[0...range.last]
-    end
+    selections = selections[0...range.last] if range.last != INFINITY
+    selections
   end
   
   def available_actions
@@ -84,6 +83,8 @@ class Dominion::Player
     @cards_bought = 0
     
     @error = ""
+
+    @deck.cleanup
     draw_hand
   end
   
@@ -96,8 +97,16 @@ class Dominion::Player
     card
   end
 
+  def play(card, game)
+    return unless hand.include?(card)
+    @actions_played += 1
+    @deck.play(card)
+    Card[card].call(game)
+  end
+
   def tell(statement)
     @io.puts statement
+    @io.puts
   end
 
   def spend!(amount)

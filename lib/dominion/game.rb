@@ -25,8 +25,8 @@ class Dominion::Game
     player
   end
 
-  def other_players
-    PlayerProxy.new(@players - [current_player])
+  def other_players(excluded=current_player)
+    PlayerProxy.new(@players - [excluded])
   end
 
   def all_players
@@ -70,6 +70,10 @@ class Dominion::Game
     all_players.draw_hand
   end
   
+  def track_purchase(card)
+    @cards[card] -= 1
+  end
+
 private
   def card_set(cards)
     case cards

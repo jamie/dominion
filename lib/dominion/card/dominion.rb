@@ -17,7 +17,9 @@ Dominion::Card.define_kingdom "Cellar", 2, "Action" do
       discards.each do |card|
         count += 1 if player.discard(card)
       end
-      player.draw(count)
+      new_cards = player.draw(count)
+      player.tell "Drew #{new_cards.join(', ')}"
+      game.other_players.tell "#{player.name} discarded #{discards.join(', ')} and drew #{new_cards.size} cards."
     end
   end
 end
@@ -65,6 +67,8 @@ Dominion::Card.define_kingdom "Militia", 4, "Action", "Attack" do
     game.other_players.each do |player|
       cards = player.ask("Discard down to 3 cards.", player.hand, :count => player.hand.size-3)
       cards.each {|card| player.discard(card)}
+      player.tell "Discarded #{cards.join(', ')}"
+      game.other_players(player).tell "#{player.name} discarded #{cards.join(', ')}"
     end
   end
 end
@@ -78,10 +82,10 @@ Dominion::Card.define_kingdom "Mine", 5, "Action" do
   
   action do |game|
     game.current_player do |player|
-      trashed = player.ask("Select a Treasure to trash.", player.hand.select{|c|Card[c].treasure?})
+      trashed = player.ask("Select a Treasure to trash.", player.hand.select{|c|Card[c].treasure?})[0]
 
-      to_gain = game.available_cards.select{|c, count| Card[c].treasure? and Card[c].cost <= Card[trashed].cost + 3}
-      gained = player.ask("Select a new Treasure card to gain.", to_gain)
+      to_gain = game.available_cards.select{|c| Card[c].treasure? and Card[c].cost <= Card[trashed].cost + 3}
+      gained = player.ask("Select a new Treasure card to gain.", to_gain)[0]
 
       player.trash(trashed)
       player.hand << gained
@@ -117,10 +121,10 @@ Dominion::Card.define_kingdom "Remodel", 4, "Action" do
   
   action do |game|
     game.current_player do |player|
-      trashed = player.ask("Select a card to trash.", player.hand)
+      trashed = player.ask("Select a card to trash.", player.hand)[0]
 
-      to_gain = game.available_cards.select{|c, count| Card[c].cost <= Card[trashed].cost + 2}
-      gained = player.ask("Select a new card to gain.", to_gain)
+      to_gain = game.available_cards.select{|c| Card[c].cost <= Card[trashed].cost + 2}
+      gained = player.ask("Select a new card to gain.", to_gain)[0]
 
       player.trash(trashed)
       player.discards << gained
@@ -171,8 +175,8 @@ Dominion::Card.define_kingdom "Workshop", 3, "Action" do
   
   action do |game|
     game.current_player do |player|
-      to_gain = game.available_cards.select{|c, count| Card[c].cost <= 4}
-      gained = player.ask("Select a new card to gain.", to_gain)
+      to_gain = game.available_cards.select{|c| Card[c].cost <= 4}
+      gained = player.ask("Select a new card to gain.", to_gain)[0]
 
       player.discards << gained
     end

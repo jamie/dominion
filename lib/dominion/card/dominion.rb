@@ -57,10 +57,12 @@ Dominion::Card.define_kingdom "Militia", 4, "Action", "Attack" do
   
   action do |game|
     game.other_players.each do |player|
-      cards = player.ask("Discard down to 3 cards.", player.hand, :count => player.hand.size-3)
-      cards.each {|card| player.discard(card)}
-      player.tell "Discarded #{cards.join(', ')}"
-      game.other_players(player).tell "#{player.name} discarded #{cards.join(', ')}"
+      player.attack(self) do
+        cards = player.ask("Discard down to 3 cards.", player.hand, :count => player.hand.size-3)
+        cards.each {|card| player.discard(card)}
+        player.tell "Discarded #{cards.join(', ')}"
+        game.other_players(player).tell "#{player.name} discarded #{cards.join(', ')}"
+      end
     end
   end
 end
@@ -85,11 +87,10 @@ Dominion::Card.define_kingdom "Moat", 2, "Action", "Reaction" do
   set "Dominion"
 
   extra_cards 2
-  
-  reaction do |game, attack|
-    game.current_player do |player|
-      # TODO
-    end
+
+  reaction do |player, &attack|
+    # return a null proc to cancel the attack's effect
+    lambda {}
   end
 end
 Dominion::Card.define_kingdom "Moneylender", 4, "Action"

@@ -49,6 +49,20 @@ class Dominion::Player
     selections
   end
   
+  def attack(card, &block)
+    @reactions_used = []
+    loop do
+      break if reactions_available.empty?
+      cards = ask("Reveal cards to respond to attack?", reactions_available)
+      break if cards.empty?
+      cards.each do |card|
+        block = Card[card].reaction.call(self, block)
+        @reactions_used << card
+      end
+    end
+    block.call
+  end
+  
   def available_actions
     1 + @extra_actions - @actions_played
   end
@@ -107,6 +121,10 @@ class Dominion::Player
   def tell(statement)
     @io.puts statement
     @io.puts
+  end
+  
+  def reactions_available
+    available = hand.select{|c|Card[c].reaction?} - @reactions_used
   end
 
   def spend!(amount)

@@ -100,6 +100,30 @@ class TestCard < Test::Unit::TestCase
         assert_equal 1, @p1.deck.count('Silver')
       end
     end
+    
+    context "Moat" do
+      should "process attack if not revealed" do
+        @p2.hand << "Moat"
+        @p2.expects(:ask).with{|prompt, choices|
+          prompt =~ /Discard/
+        }.returns(["Copper", "Copper", "Copper"])
+        @p2.expects(:ask).with{|prompt, choices|
+          prompt =~ /Reveal/i
+        }.returns([])
+        Card["Militia"].call(@game)
+      end
+      
+      should "skip attack if revealed" do
+        @p2.hand << "Moat"
+        @p2.expects(:ask).with{|prompt, choices|
+          prompt =~ /Discard/
+        }.returns(["Copper", "Copper", "Copper"]).never
+        @p2.expects(:ask).with{|prompt, choices|
+          prompt =~ /Reveal/i
+        }.returns(["Moat"], [])
+        Card["Militia"].call(@game)
+      end
+    end
 
     context "Remodel" do
       should "allow trashing Copper for Estate" do

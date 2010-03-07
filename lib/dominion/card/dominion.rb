@@ -57,9 +57,8 @@ Dominion::Card.define_kingdom "Militia", 4, "Action", "Attack" do
   
   action do |game|
     game.other_players.each do |player|
-      cards = player.ask("Discard down to 3 cards.", player.hand, :count => player.hand.size-3) do |card|
-        player.discard(card)
-      end
+      cards = player.ask("Discard down to 3 cards.", player.hand, :count => player.hand.size-3)
+      cards.each {|card| player.discard(card)}
       player.tell "Discarded #{cards.join(', ')}"
       game.other_players(player).tell "#{player.name} discarded #{cards.join(', ')}"
     end

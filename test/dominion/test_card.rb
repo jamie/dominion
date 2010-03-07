@@ -90,10 +90,10 @@ class TestCard < Test::Unit::TestCase
 
     context "Mine" do
       should "allow exchanging a Copper for a Silver" do
-        @p1.expects(:ask).returns(["Copper"])
+        @p1.expects(:ask).yields("Copper")
         @p1.expects(:ask).with{|prompt, choices|
           choices == ["Copper", "Silver"]
-        }.returns(["Silver"])
+        }.yields("Silver")
         Card['Mine'].call(@game)
 
         assert_equal 6, @p1.deck.count('Copper')
@@ -105,10 +105,10 @@ class TestCard < Test::Unit::TestCase
       should "allow trashing Copper for Estate" do
         @p1.expects(:ask).with{|prompt, choices|
           prompt == "Select a card to trash."
-        }.returns(["Copper"])
+        }.yields("Copper")
         @p1.expects(:ask).with{|prompt, choices|
           prompt == "Select a new card to gain." and choices.include? "Estate"
-        }.returns(["Estate"])
+        }.yields("Estate")
         Card['Remodel'].call(@game)
 
         assert_equal 6, @p1.deck.count('Copper')

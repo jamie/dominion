@@ -1,4 +1,27 @@
-Dominion::Card.define_kingdom "Adventurer", 6, "Action"
+Dominion::Card.define_kingdom "Adventurer", 6, "Action" do
+  comment "Reveal cards from your deck until you reveal 2 Treasure cards.\nPlace those cards in your hand and discard the rest."
+  set "Dominion"
+  
+  action do |game|
+    game.current_player do |player|
+      treasures = []
+      discards = []
+      while treasures.size < 2
+        card = player.deck.top_card
+        if Card[card].treasure?
+          treasures << card
+          player.deck.add_to_hand(card)
+          action = :deck_to_hand
+        else
+          discards << card
+          player.deck.add_to_discards(card)
+          action = :deck_discard
+        end
+        game.reveal(player, card, action)
+      end
+    end
+  end
+end
 Dominion::Card.define_kingdom "Bureaucrat", 4, "Action", "Attack"
 Dominion::Card.define_kingdom "Cellar", 2, "Action" do
   comment "+1 Action\nDiscard any number of cards. +1 Card per card discarded."
@@ -57,7 +80,7 @@ Dominion::Card.define_kingdom "Militia", 4, "Action", "Attack" do
   
   action do |game|
     game.other_players.each do |player|
-      player.attack(self) do
+      player.attack(self, game) do
         cards = player.ask("Discard down to 3 cards.", player.hand, :count => player.hand.size-3)
         cards.each {|card| player.discard(card)}
         player.tell "Discarded #{cards.join(', ')}"

@@ -49,7 +49,7 @@ class Dominion::Player
     selections
   end
   
-  def attack(card, &block)
+  def attack(card, game, &block)
     @reactions_used = []
     loop do
       break if reactions_available.empty?
@@ -57,6 +57,7 @@ class Dominion::Player
       break if cards.empty?
       cards.each do |card|
         block = Card[card].reaction.call(self, block)
+        game.reveal(self, card, :hand)
         @reactions_used << card
       end
     end

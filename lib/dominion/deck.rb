@@ -9,6 +9,15 @@ class Dominion::Deck
     @in_play = []
   end
   
+  def add_to_discards(card)
+    @discards << card
+  end
+  
+  def add_to_hand(card)
+    @hand << card
+    @hand.sort_by{|e|Card[e]}
+  end
+  
   def all_cards
     @stack + @discards + @hand + @in_play
   end
@@ -35,20 +44,23 @@ class Dominion::Deck
   def draw(n=1)
     new_cards = []
     n.times do
-      if @stack.empty?
-        @stack, @discards = @discards, []
-        shuffle
-      end
-      card = @stack.shift
-      @hand << card
+      card = top_card
+      add_to_hand(card)
       new_cards << card
     end
-    @hand.sort_by{|e|Card[e]}
     new_cards.sort_by{|e|Card[e]}
   end
   
   def draw_hand
     draw while @hand.size < 5
+  end
+  
+  def top_card
+    if @stack.empty?
+      @stack, @discards = @discards, []
+      shuffle
+    end
+    @stack.shift
   end
   
   def play(card)

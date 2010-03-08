@@ -66,6 +66,15 @@ class Dominion::Game
     @cards[card]
   end
   
+  def reveal(player, card, source)
+    msg = case source
+      when :hand ; "%s revealed %s from their hand."
+      when :deck_to_hand ; "%s drew %s, and added it to their hand."
+      when :deck_discard ; "%s drew %s, and discarded it."
+    end
+    msg % [player.name, card]
+  end
+  
   def start
     all_players.draw_hand
   end

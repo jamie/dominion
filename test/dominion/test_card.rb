@@ -53,13 +53,28 @@ class TestCard < Test::Unit::TestCase
   
   context "action card effects" do
     setup do
+      srand(11234)
       @p1 = Player.new("p1", BufferIO)
       @p2 = Player.new("p2", BufferIO)
 
       @game = Game.new([@p1, @p2], [])
       @game.start
     end
-  
+    
+    context "Adventurer" do
+      should "add two treasures to hand" do
+        count = @p1.hand.count("Copper")
+        Card['Adventurer'].call(@game)
+        assert_equal count+2, @p1.hand.count("Copper")
+      end
+      
+      should "add some discards" do
+        count = @p1.deck.discards.size
+        Card['Adventurer'].call(@game)
+        assert_equal count+2, @p1.deck.discards.size
+      end
+    end
+
     context "Cellar" do
       should "allow 1 extra draw per card discarded" do
         @p1.expects(:ask).returns(["Copper"])

@@ -69,10 +69,12 @@ class Dominion::Game
   def reveal(player, card, source)
     msg = case source
       when :hand ; "%s revealed %s from their hand."
+      when :hand_to_deck ; "%s revealed %s from their hand, and then placed it on top of their deck."
       when :deck_to_hand ; "%s drew %s, and added it to their hand."
       when :deck_discard ; "%s drew %s, and discarded it."
     end
-    msg % [player.name, card]
+    to_reveal = card.kind_of?(Array) ? card.join(", ") : card
+    msg % [player.name, to_reveal]
   end
   
   def start

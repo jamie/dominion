@@ -68,6 +68,12 @@ class Dominion::Deck
     @in_play << @hand.delete_at(i)
   end
   
+  def return_to_stack(card)
+    return false unless i = @hand.index(card)
+    @stack.unshift(@hand.delete_at(i))
+    card
+  end
+  
   def shuffle
     @stack = @stack.sort_by{rand}
   end

@@ -75,6 +75,13 @@ class TestCard < Test::Unit::TestCase
       end
     end
 
+    context "Bureaucrat" do
+      should "add a Silver to deck" do
+        Card['Bureaucrat'].call(@game)
+        assert_equal "Silver", @p1.deck.top_card
+      end
+    end
+
     context "Cellar" do
       should "allow 1 extra draw per card discarded" do
         @p1.expects(:ask).returns(["Copper"])

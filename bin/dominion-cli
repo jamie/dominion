@@ -9,3 +9,4 @@ include Dominion
 
 game = Game.new([Player.new('P1'), Player.new('P2')], :random)
 CLI.new(game).run
+

@@ -22,7 +22,27 @@ Dominion::Card.define_kingdom "Adventurer", 6, "Action" do
     end
   end
 end
-Dominion::Card.define_kingdom "Bureaucrat", 4, "Action", "Attack"
+Dominion::Card.define_kingdom "Bureaucrat", 4, "Action", "Attack" do
+  comment "Gain a Silver to the top of your deck.\nEach other player reveals a Treasure from their hand, and places it on top of their deck."
+  set "Dominion"
+  
+  action do |game|
+    game.current_player.deck.stack.unshift("Silver")
+    game.other_players.each do |player|
+      player.attack(self, game) do
+        v_cards = player.hand.select{|c|Card[c].victory?}
+        if v_cards.empty?
+          game.reveal(player, player.hand, :hand)
+        else
+          player.ask("Reveal a card and have it placed on top of your deck") do |card|
+            player.deck.return_to_stack(card)
+            game.reveal(player, card, :hand_to_deck)
+          end
+        end
+      end
+    end
+  end
+end
 Dominion::Card.define_kingdom "Cellar", 2, "Action" do
   comment "+1 Action\nDiscard any number of cards. +1 Card per card discarded."
   set "Dominion"
